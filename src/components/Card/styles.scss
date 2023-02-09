@@ -1,0 +1,13 @@
+.card {
+  cursor: pointer;
+  padding: 20px;
+  border: 1px solid #ffffed;
+  border-radius: 8px;
+
+  font-size: 51px;
+  line-height: 1.1;
+}
+
+.selected {
+  background-color: rgb(83, 86, 242);
+}
