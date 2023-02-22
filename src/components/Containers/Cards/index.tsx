@@ -1,8 +1,13 @@
-import './styles.scss'
+import "./styles.scss"
 
-export function CardsContainer ({children, isSavedCards}: any) {
+interface IProps {
+  children?: React.ReactNode
+  isSavedCards?: boolean
+}
+
+export function CardsContainer({ children, isSavedCards }: IProps) {
   return (
-    <div className={`container__cards ${isSavedCards ? 'saved' : ''}`}>
+    <div className={`container__cards ${isSavedCards ? "saved" : ""}`}>
       {children}
     </div>
   )

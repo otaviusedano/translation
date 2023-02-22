@@ -1,9 +1,6 @@
-import './styles.scss'
+import { IChildren } from "../../interfaces/children"
+import "./styles.scss"
 
-export function Alert ({children}: any) {
-  return (
-    <span className='alert'>
-      {children}
-    </span>
-  )
+export function Alert({ children }: IChildren) {
+  return <span className="alert">{children}</span>
 }

@@ -1,9 +1,6 @@
-import './styles.scss'
+import { IChildren } from "../../../interfaces/children"
+import "./styles.scss"
 
-export function TranslationContainer ({children}: any) {
-  return (
-    <div className='container__translation'>
-      {children}
-    </div>
-  )
+export function TranslationContainer({ children }: IChildren) {
+  return <div className="container__translation">{children}</div>
 }

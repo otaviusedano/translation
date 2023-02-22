@@ -1,7 +1,9 @@
-import './styles.scss'
+import "./styles.scss"
 
-export function Input ({onChange}: any) {
-  return (
-    <input type="text" onChange={(e) => onChange(e.target.value)} />
-  )
+interface IProps {
+  onChange: (value: string) => void
+}
+
+export function Input({ onChange }: IProps) {
+  return <input type="text" onChange={(e) => onChange(e.target.value)} />
 }

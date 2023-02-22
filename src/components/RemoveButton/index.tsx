@@ -1,9 +1,11 @@
-import { FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi"
 
-import './styles.scss'
+import "./styles.scss"
 
-export function RemoveButton ({onClick}: any) {
-  return (
-    <FiX onClick={() => onClick()} className='remove-button' />
-  )
+interface IProps {
+  onClick: () => void
+}
+
+export function RemoveButton({ onClick }: IProps) {
+  return <FiX onClick={() => onClick()} className="remove-button" />
 }

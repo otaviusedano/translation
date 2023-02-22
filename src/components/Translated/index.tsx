@@ -1,15 +1,19 @@
-import './styles.scss'
+import { ITranslated } from "../../interfaces/translated"
+import { ITranslations } from "../../interfaces/translations"
+import "./styles.scss"
 
-export function Translated ({translated}: any) {
+interface IProps {
+  translated: ITranslations
+}
+
+export function Translated({ translated }: IProps) {
   return (
-    <div className='translated'>
+    <div className="translated">
       <h1>{translated.text}</h1>
       <hr />
-      {
-        translated.translations.map((translation: any, key: any) => (
-          <span key={key}>{translation}</span>
-        ))
-      }
+      {translated.translations.map((translation: string, key) => (
+        <span key={key}>{translation}</span>
+      ))}
     </div>
   )
 }

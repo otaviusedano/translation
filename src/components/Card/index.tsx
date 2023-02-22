@@ -1,19 +1,23 @@
-import { useState } from 'react'
-import './styles.scss'
+import { useState } from "react"
+import "./styles.scss"
 
-export function Card ({translation, seleteds}: any) {
-  const [ selected, setSelected ] = useState(false)
+interface IProps {
+  translation: string
+  seleteds: string[]
+}
 
-  function changeBackgroundColor (className: string, translation: any) {
-    const index = seleteds.indexOf(translation);
+export function Card({ translation, seleteds }: IProps) {
+  const [selected, setSelected] = useState(false)
 
-    if (className === 'card ') {
+  function changeBackgroundColor(className: string, translation: string) {
+    const index = seleteds.indexOf(translation)
+
+    if (className === "card ") {
       seleteds.push(translation)
       setSelected(true)
     }
 
-    if (className === 'card selected') {
-
+    if (className === "card selected") {
       if (index > -1) {
         seleteds.splice(index, 1)
       }
@@ -26,7 +30,7 @@ export function Card ({translation, seleteds}: any) {
       onClick={(e: any) => {
         changeBackgroundColor(e.target.className, translation)
       }}
-      className={`card ${selected ? 'selected' : ''}`}
+      className={`card ${selected ? "selected" : ""}`}
     >
       {translation}
     </div>
