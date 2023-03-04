@@ -5,5 +5,11 @@ interface IProps {
 }
 
 export function Input({ onChange }: IProps) {
-  return <input type="text" onChange={(e) => onChange(e.target.value)} />
+  return (
+    <input
+      type="text"
+      placeholder="Escreva em inglês"
+      onChange={(e) => onChange(e.target.value)}
+    />
+  )
 }
