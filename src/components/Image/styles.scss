@@ -1,0 +1,57 @@
+.image {
+  position: relative;
+  margin-left: 1rem;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+
+  &.isDowloaded {
+    cursor: auto;
+    margin-left: 0;
+
+    .lazyload,
+    .lazyloading {
+      opacity: 1;
+    }
+
+    .selected {
+      opacity: 1;
+    }
+
+    .icone {
+      display: none;
+    }
+  }
+
+  .lazyload,
+  .lazyloading {
+    opacity: 0;
+  }
+
+  .lazyloaded {
+    opacity: 1;
+    transition: opacity 300ms;
+  }
+
+  .selected {
+    position: relative;
+    opacity: 0.4;
+    transition: opacity 300ms;
+  }
+
+  .icone {
+    opacity: 0;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    &.active {
+      opacity: 1;
+      transition: opacity 300ms;
+    }
+  }
+}
+
+
