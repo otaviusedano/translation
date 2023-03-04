@@ -1,7 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-import { Card } from "./components/Card"
 import { CardsContainer } from "./components/Containers/Cards"
 import { HeaderContainer } from "./components/Containers/Header"
 import { PageContainer } from "./components/Containers/Page"
@@ -10,28 +9,29 @@ import { RemoveButton } from "./components/RemoveButton"
 import { Translated } from "./components/Translated"
 import { TranslationContainer } from "./components/Containers/Translation"
 import { Button } from "./components/Button"
-import { BrowserSkeleton } from "./components/Skeletons/BrowserSkeleton"
 import { CreateContainer } from "./components/Containers/Create"
 import { Alert } from "./components/Alert"
+import { ITranslations } from "./interfaces/translations"
+import { Image } from "./components/Image"
+import { ImagesContainer } from "./components/Containers/Images"
 
 import "./App.scss"
-import { ITranslations } from "./interfaces/translations"
-import { ITranslated } from "./interfaces/translated"
 
 function App() {
-  const [translated, setTranslated] = useState([])
+  const [images, setImages] = useState([])
   const [translations, setTranslations] = useState<ITranslations[]>([])
   const [inputValue, setInputValue] = useState("")
 
   const [isUpdate, setIsUpdate] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [isDuplicate, setIsDuplicate] = useState(false)
 
   const [verifyConfirm, setVerifyConfirm] = useState(true)
 
   let selecteds: string[] = []
 
-  const apiKey = "fb95d65ab5mshbe4139f9ab76d8bp1784bajsnd8425d215d3c"
+  // const apiKey = "fb95d65ab5mshbe4139f9ab76d8bp1784bajsnd8425d215d3c"
+
+  const apiKey = "1zCqjbsKmTti76DaKJodDzBmW_CjTG_3HLD0M3Jj1dw"
 
   useEffect(() => {
     setTranslations(getAllStorage())
@@ -40,8 +40,8 @@ function App() {
   }, [isUpdate])
 
   async function translateIt(text: string) {
-    setIsLoading(false)
     setIsDuplicate(false)
+    setImages([])
 
     const textAlreadyTranslated = translations
       .map((i: ITranslations) => i.text)
@@ -51,26 +51,38 @@ function App() {
 
     if (inputValue.length < 3) return
 
+    // const options = {
+    //   method: "GET",
+    //   url: "https://translated-mymemory---translation-memory.p.rapidapi.com/get",
+    //   params: {
+    //     langpair: "en-GB|pt-BR",
+    //     q: text,
+    //     mt: "1",
+    //     onlyprivate: "0",
+    //     de: "a@b.c",
+    //   },
+    //   headers: {
+    //     "X-RapidAPI-Key": apiKey,
+    //     "X-RapidAPI-Host":
+    //       "translated-mymemory---translation-memory.p.rapidapi.com",
+    //   },
+    // }
+
     const options = {
       method: "GET",
-      url: "https://translated-mymemory---translation-memory.p.rapidapi.com/get",
+      url: "https://api.unsplash.com/search/photos",
       params: {
-        langpair: "en-GB|pt-BR",
-        q: text,
-        mt: "1",
-        onlyprivate: "0",
-        de: "a@b.c",
-      },
-      headers: {
-        "X-RapidAPI-Key": apiKey,
-        "X-RapidAPI-Host":
-          "translated-mymemory---translation-memory.p.rapidapi.com",
+        query: text,
+        page: "1",
+        per_page: "20",
+        client_id: apiKey,
       },
     }
 
     const resBody = await axios.request(options)
-    setTranslated(resBody.data.matches)
-    setIsLoading(true)
+    console.log(resBody.headers["x-ratelimit-remaining"])
+
+    setImages(resBody.data.results)
     return
   }
 
@@ -84,13 +96,12 @@ function App() {
     }
 
     setIsUpdate(true)
-    setIsLoading(true)
 
     return values
   }
 
   function createStorage() {
-    setIsLoading(true)
+    console.log(selecteds)
 
     setIsUpdate(true)
     setVerifyConfirm(true)
@@ -98,7 +109,7 @@ function App() {
       inputValue,
       JSON.stringify({
         text: inputValue,
-        translations: selecteds,
+        images: selecteds,
       })
     )
     return
@@ -118,44 +129,38 @@ function App() {
         </Button>
       </HeaderContainer>
       {!verifyConfirm ? (
-        !isLoading ? (
-          <CreateContainer>
-            <BrowserSkeleton />
-          </CreateContainer>
-        ) : (
-          <CreateContainer>
-            {isDuplicate ? (
-              <>
-                <Alert>
-                  Já existe uma tradução escolhida, tem certeza que deseja
-                  sobrescrever-la ?
-                </Alert>
-                <br />
-                <Button onClick={() => setIsDuplicate(false)}>
-                  Sim, tenho certeza
-                </Button>
-              </>
-            ) : (
-              <>
-                <h1>Selecione a tradução escolhida</h1>
-                <CardsContainer>
-                  {translated.map((i: ITranslated) => (
-                    <Card
-                      translation={i.translation}
-                      key={i.id}
-                      seleteds={selecteds}
-                    />
-                  ))}
-                </CardsContainer>
-                <Button onClick={createStorage}>Confirmar</Button>
-              </>
-            )}
-          </CreateContainer>
-        )
+        <CreateContainer>
+          {isDuplicate ? (
+            <>
+              <Alert>
+                Já existe uma tradução escolhida, tem certeza que deseja
+                sobrescrever-la ?
+              </Alert>
+              <br />
+              <Button onClick={() => setIsDuplicate(false)}>
+                Sim, tenho certeza
+              </Button>
+            </>
+          ) : (
+            <>
+              <h1>Selecione a imagem para tradução escolhida</h1>
+              <ImagesContainer>
+                {images.map((image: any, index) => (
+                  <Image
+                    key={index}
+                    src={image.urls.regular}
+                    selecteds={selecteds}
+                  />
+                ))}
+              </ImagesContainer>
+              <Button onClick={createStorage}>Confirmar</Button>
+            </>
+          )}
+        </CreateContainer>
       ) : (
         ""
       )}
-      <CardsContainer isSavedCards>
+      <CardsContainer>
         {translations?.map((i: ITranslations, key) => (
           <TranslationContainer key={key}>
             <RemoveButton
@@ -164,7 +169,7 @@ function App() {
                 setIsUpdate(true)
               }}
             />
-            <Translated translated={i} />
+            <Translated selecteds={i} />
           </TranslationContainer>
         ))}
       </CardsContainer>
