@@ -1,18 +1,19 @@
-import { ITranslated } from "../../interfaces/translated"
+import { Image } from "../Image"
+
 import { ITranslations } from "../../interfaces/translations"
 import "./styles.scss"
 
 interface IProps {
-  translated: ITranslations
+  selecteds: ITranslations
 }
 
-export function Translated({ translated }: IProps) {
+export function Translated({ selecteds }: IProps) {
   return (
     <div className="translated">
-      <h1>{translated.text}</h1>
+      <h1>{selecteds.text}</h1>
       <hr />
-      {translated.translations.map((translation: string, key) => (
-        <span key={key}>{translation}</span>
+      {selecteds.images.map((translation: string, index) => (
+        <Image isDowloaded key={index} src={translation} />
       ))}
     </div>
   )
