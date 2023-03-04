@@ -1,4 +1,4 @@
 export interface ITranslations {
   text: string
-  translations: string[]
+  images: string[]
 }
