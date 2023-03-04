@@ -27,7 +27,7 @@ export function Image({ src, selecteds, isDowloaded }: any) {
     <div className={`image ${isDowloaded ? "isDowloaded" : ""}`}>
       <Imgix
         imgixParams={{ fit: "crop", ar: "1:1" }}
-        sizes="(min-width: 960px) 33vw, (min-width: 340px) 50vw"
+        sizes="(min-width: 1440px) 18vw, (min-width: 960px) 33vw, (min-width: 340px) 50vw"
         htmlAttributes={{
           onClick: () => handleClick(),
           src: "data-src",
