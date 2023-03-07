@@ -7,7 +7,7 @@ interface IProps {
 
 export function CardsContainer({ children, isSavedCards }: IProps) {
   return (
-    <div className={`container__cards ${isSavedCards ? "saved" : ""}`}>
+    <div className={`container__cards ${isSavedCards ? "saved" : ""}lazyload`}>
       {children}
     </div>
   )

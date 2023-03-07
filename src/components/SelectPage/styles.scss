@@ -1,0 +1,14 @@
+.container__select-page {
+  position: absolute;
+
+  bottom: 0;
+
+  &[role = isNextPage] {
+    right: 0;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+  }
+}

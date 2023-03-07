@@ -1,3 +1,5 @@
+@use '../../../scss/_lazyload.scss' as *;
+
 .container__cards {
   display: flex;
   gap: 12px;

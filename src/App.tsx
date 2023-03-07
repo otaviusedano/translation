@@ -1,5 +1,6 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
+
+import { createClient } from "pexels"
 
 import { CardsContainer } from "./components/Containers/Cards"
 import { HeaderContainer } from "./components/Containers/Header"
@@ -11,14 +12,19 @@ import { TranslationContainer } from "./components/Containers/Translation"
 import { Button } from "./components/Button"
 import { CreateContainer } from "./components/Containers/Create"
 import { Alert } from "./components/Alert"
-import { ITranslations } from "./interfaces/translations"
 import { Image } from "./components/Image"
 import { ImagesContainer } from "./components/Containers/Images"
+import { SelectPage } from "./components/SelectPage"
+
+import { ITranslations } from "./interfaces/translations"
+import { IImages } from "./interfaces/images"
 
 import "./App.scss"
+import "lazysizes"
 
 function App() {
   const [images, setImages] = useState([])
+  const [countPage, setCountPage] = useState(1)
   const [translations, setTranslations] = useState<ITranslations[]>([])
   const [inputValue, setInputValue] = useState("")
 
@@ -27,11 +33,11 @@ function App() {
 
   const [verifyConfirm, setVerifyConfirm] = useState(true)
 
+  const client = createClient(
+    "nORoYnyGEZ0IELxMq3sgOwei1go1s5LuRufZ8Q7lU9jDAtZLr6YWdPVo"
+  )
+
   let selecteds: string[] = []
-
-  // const apiKey = "fb95d65ab5mshbe4139f9ab76d8bp1784bajsnd8425d215d3c"
-
-  const apiKey = "1zCqjbsKmTti76DaKJodDzBmW_CjTG_3HLD0M3Jj1dw"
 
   useEffect(() => {
     setTranslations(getAllStorage())
@@ -39,7 +45,21 @@ function App() {
     return
   }, [isUpdate])
 
-  async function translateIt(text: string) {
+  function getPhotos() {
+    client.photos
+      .search({
+        query: inputValue,
+        locale: "en-US",
+        page: countPage,
+        per_page: 8,
+      })
+      .then((i) => {
+        setImages(i.photos)
+      })
+    return
+  }
+
+  async function translateIt() {
     setIsDuplicate(false)
     setImages([])
 
@@ -51,40 +71,15 @@ function App() {
 
     if (inputValue.length < 3) return
 
-    // const options = {
-    //   method: "GET",
-    //   url: "https://translated-mymemory---translation-memory.p.rapidapi.com/get",
-    //   params: {
-    //     langpair: "en-GB|pt-BR",
-    //     q: text,
-    //     mt: "1",
-    //     onlyprivate: "0",
-    //     de: "a@b.c",
-    //   },
-    //   headers: {
-    //     "X-RapidAPI-Key": apiKey,
-    //     "X-RapidAPI-Host":
-    //       "translated-mymemory---translation-memory.p.rapidapi.com",
-    //   },
-    // }
-
-    const options = {
-      method: "GET",
-      url: "https://api.unsplash.com/search/photos",
-      params: {
-        query: text,
-        page: "1",
-        per_page: "20",
-        client_id: apiKey,
-      },
-    }
-
-    const resBody = await axios.request(options)
-    console.log(resBody.headers["x-ratelimit-remaining"])
-
-    setImages(resBody.data.results)
+    getPhotos()
     return
   }
+
+  useEffect(() => {
+    getPhotos()
+
+    return
+  }, [countPage])
 
   function getAllStorage() {
     let values = []
@@ -115,14 +110,25 @@ function App() {
     return
   }
 
+  function handleNextPage() {
+    setCountPage(countPage + 1)
+    return
+  }
+
+  function handlePrevPage() {
+    if (countPage === 1) return
+    setCountPage(countPage - 1)
+    return
+  }
+
   return (
     <PageContainer>
       <HeaderContainer>
-        <Input onChange={setInputValue} />
+        <Input onChange={setInputValue} setCountPage={setCountPage} />
         <Button
           onClick={() => {
             setVerifyConfirm(false)
-            translateIt(inputValue)
+            translateIt()
           }}
         >
           Traduzir
@@ -136,7 +142,6 @@ function App() {
                 Já existe uma tradução escolhida, tem certeza que deseja
                 sobrescrever-la ?
               </Alert>
-              <br />
               <Button onClick={() => setIsDuplicate(false)}>
                 Sim, tenho certeza
               </Button>
@@ -145,15 +150,18 @@ function App() {
             <>
               <h1>Selecione a imagem para tradução escolhida</h1>
               <ImagesContainer>
-                {images.map((image: any, index) => (
+                {images?.map((image: IImages, index) => (
                   <Image
                     key={index}
-                    src={image.urls.regular}
+                    src={image.src.original}
                     selecteds={selecteds}
+                    alt={image.alt}
                   />
                 ))}
               </ImagesContainer>
+              <SelectPage onClick={handlePrevPage} />
               <Button onClick={createStorage}>Confirmar</Button>
+              <SelectPage isNextPage onClick={handleNextPage} />
             </>
           )}
         </CreateContainer>

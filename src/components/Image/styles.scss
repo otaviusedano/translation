@@ -1,3 +1,5 @@
+@use '../../scss/lazyload' as *;
+
 .image {
   position: relative;
   margin-left: 1rem;
@@ -8,11 +10,6 @@
     cursor: auto;
     margin-left: 0;
 
-    .lazyload,
-    .lazyloading {
-      opacity: 1;
-    }
-
     .selected {
       opacity: 1;
     }
@@ -20,16 +17,6 @@
     .icone {
       display: none;
     }
-  }
-
-  .lazyload,
-  .lazyloading {
-    opacity: 0;
-  }
-
-  .lazyloaded {
-    opacity: 1;
-    transition: opacity 300ms;
   }
 
   .selected {

@@ -1,14 +1,20 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 import { IoIosCheckmark } from "react-icons/io"
 import Imgix from "react-imgix"
 
 import "./styles.scss"
-import "lazysizes"
 
-export function Image({ src, selecteds, isDowloaded }: any) {
+interface IProps {
+  src: string
+  selecteds: string[]
+  isDowloaded?: boolean
+  alt: string
+}
+
+function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
   const [isSelected, setIsSelectd] = useState(false)
 
-  function handleClick() {
+  function handleSelectImage() {
     setIsSelectd(!isSelected)
 
     if (!selecteds.includes(src)) selecteds.push(src)
@@ -19,7 +25,6 @@ export function Image({ src, selecteds, isDowloaded }: any) {
       }
     }
 
-    console.log(selecteds)
     return
   }
 
@@ -29,16 +34,17 @@ export function Image({ src, selecteds, isDowloaded }: any) {
         imgixParams={{ fit: "crop", ar: "1:1" }}
         sizes="(min-width: 1440px) 15vw, (min-width: 960px) 33vw, (min-width: 340px) 50vw"
         htmlAttributes={{
-          onClick: () => handleClick(),
+          onClick: () => (!isDowloaded ? handleSelectImage() : null),
           src: "data-src",
           srcSet: "data-srcset",
           sizes: "data-sizes",
+          alt: alt,
         }}
-        className={`lazyload ${isSelected ? "selected" : ""}`}
+        className={`${isSelected ? "selected" : ""} lazyload`}
         src={src}
       />
       <IoIosCheckmark
-        onClick={() => handleClick()}
+        onClick={() => handleSelectImage()}
         className={`icone ${isSelected ? "active" : ""}`}
         fontSize={64}
         color={"rgba(255, 255, 255, 0.87)"}
@@ -46,3 +52,5 @@ export function Image({ src, selecteds, isDowloaded }: any) {
     </div>
   )
 }
+
+export const Image = memo(ImageComponent)

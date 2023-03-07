@@ -1,3 +1,5 @@
+@use '../../../scss/_lazyload.scss' as *;
+
 .container__header {
   display: flex;
   gap: 8px;
