@@ -6,9 +6,9 @@ import "./styles.scss"
 
 interface IProps {
   src: string
-  selecteds: string[]
+  selecteds?: string[]
   isDowloaded?: boolean
-  alt: string
+  alt?: string
 }
 
 function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
@@ -17,11 +17,11 @@ function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
   function handleSelectImage() {
     setIsSelectd(!isSelected)
 
-    if (!selecteds.includes(src)) selecteds.push(src)
+    if (!selecteds?.includes(src)) selecteds?.push(src)
     else {
       const index = selecteds.indexOf(src)
       if (index > -1) {
-        selecteds.splice(index, 1)
+        selecteds?.splice(index, 1)
       }
     }
 

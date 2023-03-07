@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { createClient } from "pexels"
+import { createClient, PhotosWithTotalResults } from "pexels"
 
 import { CardsContainer } from "./components/Containers/Cards"
 import { HeaderContainer } from "./components/Containers/Header"
@@ -53,7 +53,9 @@ function App() {
         page: countPage,
         per_page: 8,
       })
-      .then((i) => {
+      .then((i: any) => {
+        console.log(i)
+
         setImages(i.photos)
       })
     return
