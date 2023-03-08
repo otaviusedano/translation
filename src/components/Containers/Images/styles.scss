@@ -1,4 +1,6 @@
-.container__image {
+@use '../../../scss/_lazyload.scss' as *;
+
+.container__images {
   margin-top: 24px;
   display: flex;
   flex-wrap: wrap;

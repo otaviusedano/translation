@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { createClient, PhotosWithTotalResults } from "pexels"
+import { createClient } from "pexels"
 
 import { CardsContainer } from "./components/Containers/Cards"
 import { HeaderContainer } from "./components/Containers/Header"
@@ -30,6 +30,7 @@ function App() {
 
   const [isUpdate, setIsUpdate] = useState(false)
   const [isDuplicate, setIsDuplicate] = useState(false)
+  const [isTranslated, setIsTranslated] = useState(false)
 
   const [verifyConfirm, setVerifyConfirm] = useState(true)
 
@@ -54,8 +55,6 @@ function App() {
         per_page: 8,
       })
       .then((i: any) => {
-        console.log(i)
-
         setImages(i.photos)
       })
     return
@@ -74,11 +73,12 @@ function App() {
     if (inputValue.length < 3) return
 
     getPhotos()
+    setIsTranslated(true)
     return
   }
 
   useEffect(() => {
-    getPhotos()
+    if (isTranslated) getPhotos()
 
     return
   }, [countPage])
@@ -98,7 +98,7 @@ function App() {
   }
 
   function createStorage() {
-    console.log(selecteds)
+    if (!selecteds.length) return alert("Nenhuma Imagem selecionada!")
 
     setIsUpdate(true)
     setVerifyConfirm(true)
@@ -114,12 +114,14 @@ function App() {
 
   function handleNextPage() {
     setCountPage(countPage + 1)
+
     return
   }
 
   function handlePrevPage() {
     if (countPage === 1) return
     setCountPage(countPage - 1)
+
     return
   }
 

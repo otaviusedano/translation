@@ -1,6 +1,6 @@
-import { memo, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import { IoIosCheckmark } from "react-icons/io"
-import Imgix from "react-imgix"
+import Imgix, { Picture, Source } from "react-imgix"
 
 import "./styles.scss"
 
@@ -13,6 +13,14 @@ interface IProps {
 
 function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
   const [isSelected, setIsSelectd] = useState(false)
+
+  const srcLoading =
+    "https://images.pexels.com/photos/3023211/pexels-photo-3023211.jpeg"
+
+  useEffect(() => {
+    if (!selecteds?.length) setIsSelectd(false)
+    return
+  }, [selecteds])
 
   function handleSelectImage() {
     setIsSelectd(!isSelected)
@@ -29,7 +37,7 @@ function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
   }
 
   return (
-    <div className={`image ${isDowloaded ? "isDowloaded" : ""}`}>
+    <div className={`image ${isDowloaded ? "isDowloaded" : ""} lazyload`}>
       <Imgix
         imgixParams={{ fit: "crop", ar: "1:1" }}
         sizes="(min-width: 1440px) 15vw, (min-width: 960px) 33vw, (min-width: 340px) 50vw"
@@ -39,9 +47,10 @@ function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
           srcSet: "data-srcset",
           sizes: "data-sizes",
           alt: alt,
+          loading: "lazy",
         }}
         className={`${isSelected ? "selected" : ""} lazyload`}
-        src={src}
+        src={src ? src : srcLoading}
       />
       <IoIosCheckmark
         onClick={() => handleSelectImage()}

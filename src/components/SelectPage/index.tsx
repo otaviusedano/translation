@@ -9,7 +9,7 @@ interface IProps {
 export function SelectPage({ isNextPage, onClick }: IProps) {
   return (
     <div
-      className="container__select-page"
+      className="container__select-page lazyload"
       role={isNextPage ? "isNextPage" : ""}
     >
       {isNextPage ? (
