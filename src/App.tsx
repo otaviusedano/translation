@@ -34,9 +34,9 @@ function App() {
 
   const [verifyConfirm, setVerifyConfirm] = useState(true)
 
-  const client = createClient(
-    "nORoYnyGEZ0IELxMq3sgOwei1go1s5LuRufZ8Q7lU9jDAtZLr6YWdPVo"
-  )
+  // const client = createClient(
+  //   "nORoYnyGEZ0IELxMq3sgOwei1go1s5LuRufZ8Q7lU9jDAtZLr6YWdPVo"
+  // )
 
   let selecteds: string[] = []
 
@@ -47,16 +47,16 @@ function App() {
   }, [isUpdate])
 
   function getPhotos() {
-    client.photos
-      .search({
-        query: inputValue,
-        locale: "en-US",
-        page: countPage,
-        per_page: 8,
-      })
-      .then((i: any) => {
-        setImages(i.photos)
-      })
+    // client.photos
+    //   .search({
+    //     query: inputValue,
+    //     locale: "en-US",
+    //     page: countPage,
+    //     per_page: 8,
+    //   })
+    //   .then((i: any) => {
+    //     setImages(i.photos)
+    //   })
     return
   }
 
