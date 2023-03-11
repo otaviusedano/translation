@@ -1,6 +1,6 @@
-import { memo, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { IoIosCheckmark } from "react-icons/io"
-import Imgix, { Picture, Source } from "react-imgix"
+import Imgix from "react-imgix"
 
 import "./styles.scss"
 
@@ -11,7 +11,7 @@ interface IProps {
   alt?: string
 }
 
-function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
+export function Image({ src, selecteds, isDowloaded, alt }: IProps) {
   const [isSelected, setIsSelectd] = useState(false)
 
   const srcLoading =
@@ -61,5 +61,3 @@ function ImageComponent({ src, selecteds, isDowloaded, alt }: IProps) {
     </div>
   )
 }
-
-export const Image = memo(ImageComponent)

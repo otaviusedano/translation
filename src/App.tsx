@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { createClient } from "pexels"
 
@@ -6,7 +6,6 @@ import { CardsContainer } from "./components/Containers/Cards"
 import { HeaderContainer } from "./components/Containers/Header"
 import { PageContainer } from "./components/Containers/Page"
 import { Input } from "./components/Input"
-import { RemoveButton } from "./components/RemoveButton"
 import { Translated } from "./components/Translated"
 import { TranslationContainer } from "./components/Containers/Translation"
 import { Button } from "./components/Button"
@@ -23,65 +22,57 @@ import "./App.scss"
 import "lazysizes"
 
 function App() {
-  const [images, setImages] = useState([])
+  const [images, setImages] = useState<any[]>([])
+
   const [countPage, setCountPage] = useState(1)
-  const [translations, setTranslations] = useState<ITranslations[]>([])
-  const [inputValue, setInputValue] = useState("")
+  const [translations, setTranslations] = useState<any[]>([])
 
-  const [isUpdate, setIsUpdate] = useState(false)
+  const [newTranslation, setNewTranslation] = useState("")
+
   const [isDuplicate, setIsDuplicate] = useState(false)
-  const [isTranslated, setIsTranslated] = useState(false)
-
   const [verifyConfirm, setVerifyConfirm] = useState(true)
 
-  // const client = createClient(
-  //   "nORoYnyGEZ0IELxMq3sgOwei1go1s5LuRufZ8Q7lU9jDAtZLr6YWdPVo"
-  // )
+  const client = createClient(
+    "nORoYnyGEZ0IELxMq3sgOwei1go1s5LuRufZ8Q7lU9jDAtZLr6YWdPVo"
+  )
+
+  const textAlreadyTranslated = translations
+    .map((i: ITranslations) => i?.text)
+    .includes(newTranslation)
 
   let selecteds: string[] = []
 
   useEffect(() => {
+    if (!getAllStorage().length) return
+
     setTranslations(getAllStorage())
-    setIsUpdate(false)
-    return
-  }, [isUpdate])
+  }, [])
 
   function getPhotos() {
-    // client.photos
-    //   .search({
-    //     query: inputValue,
-    //     locale: "en-US",
-    //     page: countPage,
-    //     per_page: 8,
-    //   })
-    //   .then((i: any) => {
-    //     setImages(i.photos)
-    //   })
+    const countPerPage = 8
+
+    client.photos
+      .search({
+        query: newTranslation,
+        locale: "en-US",
+        page: countPage,
+        per_page: countPerPage,
+      })
+      .then((i: any) => {
+        setImages([...i.photos])
+      })
     return
   }
 
   async function translateIt() {
     setIsDuplicate(false)
-    setImages([])
-
-    const textAlreadyTranslated = translations
-      .map((i: ITranslations) => i.text)
-      .includes(inputValue)
+    if (newTranslation.length < 3) return
 
     if (textAlreadyTranslated) setIsDuplicate(true)
 
-    if (inputValue.length < 3) return
-
     getPhotos()
-    setIsTranslated(true)
     return
   }
-
-  useEffect(() => {
-    if (isTranslated) getPhotos()
-
-    return
-  }, [countPage])
 
   function getAllStorage() {
     let values = []
@@ -92,43 +83,100 @@ function App() {
       values.push(JSON.parse(localStorage.getItem(keys[i]) || ""))
     }
 
-    setIsUpdate(true)
-
     return values
   }
 
-  function createStorage() {
-    if (!selecteds.length) return alert("Nenhuma Imagem selecionada!")
+  function compareTranslations(translations: any) {
+    const translationsFiltereds = translations.map(
+      (translations: ITranslations) => {
+        if (translations?.text === newTranslation) {
+          const imagesLength = translations.images.length
 
-    setIsUpdate(true)
+          translations.images.splice(0, imagesLength)
+          translations.images.push(...selecteds)
+        }
+      }
+    )
+
+    return translationsFiltereds
+  }
+
+  function handleCreateTranslation() {
+    if (!selecteds.length) return alert("Nenhuma Imagem selecionada!")
+    setTranslations((translations) => {
+      if (textAlreadyTranslated)
+        return [...translations, ...compareTranslations(translations)]
+      return [
+        ...translations,
+        {
+          text: newTranslation,
+          images: selecteds,
+        },
+      ]
+    })
+
+    createStorage()
+  }
+
+  function createStorage() {
     setVerifyConfirm(true)
     localStorage.setItem(
-      inputValue,
+      newTranslation,
       JSON.stringify({
-        text: inputValue,
+        text: newTranslation,
         images: selecteds,
       })
     )
     return
   }
 
-  function handleNextPage() {
-    setCountPage(countPage + 1)
+  useEffect(() => {
+    getPhotos()
+  }, [countPage])
 
-    return
+  function handleRemoveTranslation(translationFromEvent: any) {
+    setTranslations((translations) => {
+      translations.map((translation) => {
+        if (translationFromEvent === translation) {
+          localStorage.removeItem(translation.text)
+          translation.images.splice(0, translation.images.length)
+          translation.text = ""
+        }
+      })
+
+      return [...translations]
+    })
+
+    return translationFromEvent
   }
 
-  function handlePrevPage() {
-    if (countPage === 1) return
-    setCountPage(countPage - 1)
-
-    return
-  }
+  const ImagesContainerComponent = (
+    <>
+      <h1>Selecione a imagem para tradução escolhida</h1>
+      <ImagesContainer>
+        {images?.map((image: IImages, index: number) => (
+          <Image
+            key={index}
+            src={image.src.original}
+            selecteds={selecteds}
+            alt={image.alt}
+          />
+        ))}
+      </ImagesContainer>
+      <SelectPage countPage={countPage} setCountPage={setCountPage} />
+      <Button onClick={handleCreateTranslation}>Confirmar</Button>
+      <SelectPage
+        isNextPage
+        countPage={countPage}
+        setCountPage={setCountPage}
+      />
+    </>
+  )
 
   return (
     <PageContainer>
       <HeaderContainer>
-        <Input onChange={setInputValue} setCountPage={setCountPage} />
+        <Input onChange={setNewTranslation} value={newTranslation} />
         <Button
           onClick={() => {
             setVerifyConfirm(false)
@@ -151,39 +199,22 @@ function App() {
               </Button>
             </>
           ) : (
-            <>
-              <h1>Selecione a imagem para tradução escolhida</h1>
-              <ImagesContainer>
-                {images?.map((image: IImages, index) => (
-                  <Image
-                    key={index}
-                    src={image.src.original}
-                    selecteds={selecteds}
-                    alt={image.alt}
-                  />
-                ))}
-              </ImagesContainer>
-              <SelectPage onClick={handlePrevPage} />
-              <Button onClick={createStorage}>Confirmar</Button>
-              <SelectPage isNextPage onClick={handleNextPage} />
-            </>
+            ImagesContainerComponent
           )}
         </CreateContainer>
       ) : (
         ""
       )}
       <CardsContainer>
-        {translations?.map((i: ITranslations, key) => (
-          <TranslationContainer key={key}>
-            <RemoveButton
-              onClick={() => {
-                localStorage.removeItem(i.text)
-                setIsUpdate(true)
-              }}
-            />
-            <Translated selecteds={i} />
-          </TranslationContainer>
-        ))}
+        {translations.map((i: ITranslations, key) =>
+          i ? (
+            <TranslationContainer key={key}>
+              <Translated selecteds={i} onClick={handleRemoveTranslation} />
+            </TranslationContainer>
+          ) : (
+            ""
+          )
+        )}
       </CardsContainer>
     </PageContainer>
   )

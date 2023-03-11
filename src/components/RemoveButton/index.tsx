@@ -7,7 +7,7 @@ interface IProps {
   onClick: () => void
 }
 
-export function RemoveButtonComponent({ onClick }: IProps) {
+function RemoveButtonComponent({ onClick }: IProps) {
   return <FiX onClick={() => onClick()} className="remove-button" />
 }
 

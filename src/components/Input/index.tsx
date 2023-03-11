@@ -2,17 +2,17 @@ import "./styles.scss"
 
 interface IProps {
   onChange: (value: string) => void
-  setCountPage: React.Dispatch<React.SetStateAction<number>>
+  value: string
 }
 
-export function Input({ onChange, setCountPage }: IProps) {
+export function Input({ onChange, value }: IProps) {
   return (
     <input
       type="text"
       placeholder="Escreva em inglês"
+      value={value}
       onChange={(e) => {
         onChange(e.target.value)
-        setCountPage(1)
       }}
     />
   )
