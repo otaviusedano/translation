@@ -20,6 +20,7 @@ import { IImages } from "./interfaces/images"
 
 import "./App.scss"
 import "lazysizes"
+import { ConfirmButton } from "./components/ConfirmButton"
 
 function App() {
   const [images, setImages] = useState<any[]>([])
@@ -164,7 +165,7 @@ function App() {
         ))}
       </ImagesContainer>
       <SelectPage countPage={countPage} setCountPage={setCountPage} />
-      <Button onClick={handleCreateTranslation}>Confirmar</Button>
+      <ConfirmButton onClick={handleCreateTranslation}>Confirmar</ConfirmButton>
       <SelectPage
         isNextPage
         countPage={countPage}
