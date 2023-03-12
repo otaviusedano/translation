@@ -2,8 +2,12 @@
 
 .container__select-page {
   position: absolute;
-
   bottom: 0;
+
+  @media (max-width: 500px) {
+    bottom: 58px;
+    font-size: 0.8em;
+  }
 
   &[role = isNextPage] {
     right: 0;
@@ -14,3 +18,4 @@
     align-items: center;
   }
 }
+
